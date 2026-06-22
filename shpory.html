@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Шпоры · Микроконтроллеры + Python/Android</title>
+<style>
+:root{
+  --bg:#0a0a0a; --card:#141414; --card2:#1c1c1c; --bd:#2a2a2a;
+  --tx:#e8e8e8; --mut:#8a8a8a; --acc:#4ade80; --acc2:#60a5fa;
+  --warn:#fbbf24; --code:#0d1117;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6;padding:0 0 80px}
+.wrap{max-width:780px;margin:0 auto;padding:16px}
+header{position:sticky;top:0;background:rgba(10,10,10,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--bd);z-index:100;padding:14px 16px}
+header h1{font-size:18px;font-weight:700}
+header p{font-size:12px;color:var(--mut);margin-top:2px}
+.tabs{display:flex;gap:6px;margin-top:12px;overflow-x:auto;padding-bottom:4px}
+.tab{flex:0 0 auto;background:var(--card);border:1px solid var(--bd);color:var(--mut);padding:7px 14px;border-radius:20px;font-size:13px;cursor:pointer;white-space:nowrap;transition:.15s}
+.tab.active{background:var(--acc);color:#000;border-color:var(--acc);font-weight:600}
+section{display:none}
+section.active{display:block}
+h2{font-size:20px;margin:20px 0 4px;color:var(--acc)}
+h3{font-size:16px;margin:18px 0 8px;color:var(--acc2)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px;margin:12px 0}
+.card h4{font-size:15px;margin-bottom:8px}
+p{margin:8px 0;font-size:14.5px}
+.mut{color:var(--mut);font-size:13px}
+.tag{display:inline-block;background:var(--card2);border:1px solid var(--bd);color:var(--mut);font-size:11px;padding:2px 8px;border-radius:6px;margin:2px 4px 2px 0}
+ul{margin:8px 0 8px 18px}li{margin:4px 0;font-size:14px}
+pre{background:var(--code);border:1px solid var(--bd);border-radius:10px;padding:12px;overflow-x:auto;margin:10px 0;position:relative}
+code{font-family:'SF Mono',Consolas,Menlo,monospace;font-size:12.5px;color:#c9d1d9;line-height:1.5}
+.kw{color:#ff7b72}.fn{color:#d2a8ff}.num{color:#79c0ff}.str{color:#a5d6ff}.cm{color:#8b949e;font-style:italic}
+.copy{position:absolute;top:8px;right:8px;background:var(--card2);border:1px solid var(--bd);color:var(--mut);font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer}
+.copy:active{background:var(--acc);color:#000}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13px}
+th,td{border:1px solid var(--bd);padding:6px 10px;text-align:center}
+th{background:var(--card2);color:var(--acc2)}
+.steps{counter-reset:s;list-style:none;margin-left:0}
+.steps li{counter-increment:s;position:relative;padding-left:30px;margin:8px 0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:0;background:var(--acc);color:#000;width:21px;height:21px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.warnbox{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.3);border-radius:10px;padding:12px;margin:12px 0;font-size:13.5px}
+.warnbox b{color:var(--warn)}
+.okbox{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.3);border-radius:10px;padding:12px;margin:12px 0;font-size:13.5px}
+.gate{font-family:monospace;font-size:13px;white-space:pre;background:var(--code);padding:12px;border-radius:8px;display:inline-block;color:#c9d1d9;margin:6px 0}
+.pin{display:inline-block;background:#1f2937;color:#93c5fd;padding:1px 7px;border-radius:5px;font-family:monospace;font-size:12px;margin:0 2px}
+.saybox{background:rgba(96,165,250,.07);border-left:3px solid var(--acc2);border-radius:0 8px 8px 0;padding:10px 14px;margin:10px 0;font-size:14px}
+.saybox b{color:var(--acc2)}
+details{background:var(--card2);border:1px solid var(--bd);border-radius:8px;margin:8px 0;padding:0}
+summary{padding:10px 14px;cursor:pointer;font-size:14px;font-weight:600}
+details[open] summary{border-bottom:1px solid var(--bd)}
+details .in{padding:12px 14px}
+a{color:var(--acc2)}
+.big{font-size:15px;font-weight:600;color:var(--tx)}
+
+/* --- добавлено при объединении --- */
+:root{--py:#ffd43b;--an:#3ddc84}
+.q{background:var(--card);border:1px solid var(--bd);border-radius:10px;margin:10px 0;padding:0}
+.q summary{font-size:13.5px;font-weight:600;color:var(--tx)}
+.q .in{font-size:13.5px;color:#d8d8d8;padding:12px 14px}
+code{white-space:pre}
+/* переключатель предметов */
+.subjbar{display:flex;gap:8px;margin-bottom:10px}
+.subj{flex:1;background:var(--card);border:1px solid var(--bd);color:var(--mut);padding:10px 12px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;text-align:center;transition:.15s;display:flex;align-items:center;justify-content:center;gap:7px}
+.subj.active{color:#000;font-weight:700}
+.subj[data-s="mc"].active{background:var(--acc2);border-color:var(--acc2)}
+.subj[data-s="py"].active{background:var(--py);border-color:var(--py)}
+.subj-mc,.subj-py{display:none}
+.tabgroup{display:none}
+.tabgroup.active{display:flex}
+
+</style>
+</head>
+<body>
+<header>
+  <h1>📚 Шпоры — 2 предмета</h1>
+  <p>Переключай предмет сверху, потом раздел</p>
+  <div class="subjbar">
+    <div class="subj active" data-s="mc">🔌 Микроконтроллеры</div>
+    <div class="subj" data-s="py">🐍 Python / Android</div>
+  </div>
+  <div class="tabs tabgroup active" data-g="mc">
+    <div class="tab" data-t="mc_start">⭐ С чего начать</div>
+    <div class="tab" data-t="mc_q1">В.1 — Логика</div>
+    <div class="tab" data-t="mc_q2">В.2 — Устройства</div>
+    <div class="tab" data-t="mc_q3">В.3 — Код+Сборка</div>
+    <div class="tab" data-t="mc_bilet">Билеты 1–30</div>
+  </div>
+  <div class="tabs tabgroup" data-g="py">
+    <div class="tab" data-t="py_start">⭐ Старт</div>
+    <div class="tab" data-t="py_pytask">Python задачи</div>
+    <div class="tab" data-t="py_antask">Android задачи</div>
+    <div class="tab" data-t="py_theory">Теория 1–60</div>
+  </div>
+</header>
+<div class="wrap">
+
+<section id="mc_start" class="subj-mc">
+  <h2>Главное за 2 минуты</h2>
+  <div class="okbox">
+    В каждом билете <b>3 вопроса</b>. Вопросы 1 и 2 — устно (рассказать + нарисовать на листке). Вопрос 3 — собрать схему в Tinkercad на компе и вставить код. <b>Инет есть → открываешь эту шпору и делаешь по шагам.</b>
+  </div>
+
+  <div class="card">
+    <h4>Что отвечать устно (В.1 и В.2)</h4>
+    <p>Тебя попросят: <span class="tag">нарисовать обозначение</span> <span class="tag">таблицу истинности</span> <span class="tag">рассказать как работает</span>. Всё это есть во вкладках «В.1» и «В.2». Рисуешь на листке прямоугольник со значком и таблицу — этого хватает.</p>
+  </div>
+
+  <div class="card">
+    <h4>Как сдать практику (В.3) — план</h4>
+    <ol class="steps">
+      <li>Заходишь на <b>tinkercad.com</b> → Circuits → Create new Circuit</li>
+      <li>Находишь свой билет во вкладке «Билеты 1–30» → там написано, какая это задача</li>
+      <li>Открываешь нужную задачу во вкладке «В.3» → там схема, какие детали, куда провода, и готовый код</li>
+      <li>Собираешь схему, жмёшь <b>Code → Text</b>, стираешь всё, вставляешь код</li>
+      <li>Жмёшь <b>Start Simulation</b> → проверяешь что работает</li>
+    </ol>
+  </div>
+
+  <div class="warnbox">
+    <b>Если совсем горит:</b> вопрос 3 одинаковый для многих билетов. Выучи сборку <b>3 базовых схем</b> (светодиод+кнопка, фоторезистор, потенциометр) — они закрывают больше половины билетов.
+  </div>
+
+  <div class="card">
+    <h4>Базовые слова, чтобы не путаться</h4>
+    <ul>
+      <li><b>Светодиод (LED)</b> — лампочка. Длинная ножка (+) к пину, короткая через резистор на GND.</li>
+      <li><b>Резистор</b> — обязателен с диодом (220 Ом), чтобы не сгорел.</li>
+      <li><b>Кнопка (тактовая)</b> — замыкает цепь пока нажата.</li>
+      <li><b>Фоторезистор</b> — меняет сопротивление от света (темно → одно, светло → другое).</li>
+      <li><b>Потенциометр</b> — крутилка, плавно меняет напряжение.</li>
+      <li><b>GND</b> — минус (земля). <b>5V</b> — плюс. <b>A0–A5</b> — аналоговые входы. <b>0–13</b> — цифровые пины.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ Q1 LOGIC ============ -->
+<section id="mc_q1" class="subj-mc">
+  <h2>Вопрос 1 — Логические элементы</h2>
+  <p class="mut">Принцип: «n И» / «n ИЛИ» отличаются только числом входов. Логика та же. Рисуешь обозначение + таблицу истинности для 2 входов — этого достаточно, объясняешь что при большем числе входов работает так же.</p>
+
+  <div class="saybox"><b>Как отвечать:</b> «Это логический элемент [название]. Обозначается так. На входы подаются 0 или 1, на выходе получаем по правилу… Вот таблица истинности.»</div>
+
+  <div class="card">
+    <h4>НЕ (NOT, инвертор)</h4>
+    <p>Переворачивает сигнал. Был 0 → стал 1, был 1 → стал 0.</p>
+    <div class="gate">  ___
+A ─| 1 |o─ Y     (треугольник с кружком на выходе)
+   ‾‾‾</div>
+    <table><tr><th>A</th><th>Y</th></tr><tr><td>0</td><td>1</td></tr><tr><td>1</td><td>0</td></tr></table>
+  </div>
+
+  <div class="card">
+    <h4>И (AND) · «2 И», «3 И» … «8 И»</h4>
+    <p>Выход = 1, <b>только если ВСЕ входы = 1</b>. Хоть один 0 → выход 0. Значок «&amp;» в прямоугольнике.</p>
+    <table><tr><th>A</th><th>B</th><th>Y</th></tr><tr><td>0</td><td>0</td><td>0</td></tr><tr><td>0</td><td>1</td><td>0</td></tr><tr><td>1</td><td>0</td><td>0</td></tr><tr><td>1</td><td>1</td><td>1</td></tr></table>
+    <p class="mut">Правило для n входов: 1 на выходе только когда все n входов = 1.</p>
+  </div>
+
+  <div class="card">
+    <h4>ИЛИ (OR) · «2 ИЛИ» … «8 ИЛИ»</h4>
+    <p>Выход = 1, <b>если хотя бы один вход = 1</b>. Все 0 → выход 0. Значок «1» (или «≥1») в прямоугольнике.</p>
+    <table><tr><th>A</th><th>B</th><th>Y</th></tr><tr><td>0</td><td>0</td><td>0</td></tr><tr><td>0</td><td>1</td><td>1</td></tr><tr><td>1</td><td>0</td><td>1</td></tr><tr><td>1</td><td>1</td><td>1</td></tr></table>
+    <p class="mut">Правило для n входов: 0 на выходе только когда все входы = 0.</p>
+  </div>
+
+  <div class="card">
+    <h4>И-НЕ (NAND) · «2 И-НЕ» … «8 И-НЕ»</h4>
+    <p>Это И, но выход перевёрнут. Выход = 0 только когда все входы = 1, иначе 1.</p>
+    <table><tr><th>A</th><th>B</th><th>Y</th></tr><tr><td>0</td><td>0</td><td>1</td></tr><tr><td>0</td><td>1</td><td>1</td></tr><tr><td>1</td><td>0</td><td>1</td></tr><tr><td>1</td><td>1</td><td>0</td></tr></table>
+  </div>
+
+  <div class="card">
+    <h4>ИЛИ-НЕ (NOR) · «2 ИЛИ-НЕ» … «8 ИЛИ-НЕ»</h4>
+    <p>Это ИЛИ, но выход перевёрнут. Выход = 1 только когда все входы = 0, иначе 0.</p>
+    <table><tr><th>A</th><th>B</th><th>Y</th></tr><tr><td>0</td><td>0</td><td>1</td></tr><tr><td>0</td><td>1</td><td>0</td></tr><tr><td>1</td><td>0</td><td>0</td></tr><tr><td>1</td><td>1</td><td>0</td></tr></table>
+  </div>
+
+  <div class="card">
+    <h4>Исключающее ИЛИ (XOR)</h4>
+    <p>Выход = 1, когда входы <b>разные</b>. Одинаковые входы → 0. Значок «=1».</p>
+    <table><tr><th>A</th><th>B</th><th>Y</th></tr><tr><td>0</td><td>0</td><td>0</td></tr><tr><td>0</td><td>1</td><td>1</td></tr><tr><td>1</td><td>0</td><td>1</td></tr><tr><td>1</td><td>1</td><td>0</td></tr></table>
+  </div>
+
+  <div class="card">
+    <h4>Исключающее ИЛИ-НЕ (XNOR)</h4>
+    <p>Наоборот к XOR. Выход = 1, когда входы <b>одинаковые</b>.</p>
+    <table><tr><th>A</th><th>B</th><th>Y</th></tr><tr><td>0</td><td>0</td><td>1</td></tr><tr><td>0</td><td>1</td><td>0</td></tr><tr><td>1</td><td>0</td><td>0</td></tr><tr><td>1</td><td>1</td><td>1</td></tr></table>
+  </div>
+
+  <h3>Системы счисления (билеты 1, 2)</h3>
+  <div class="card">
+    <h4>Двоично-десятичная (BCD)</h4>
+    <p>Каждую десятичную цифру кодируют 4 битами отдельно. Например <b>число 25</b>: цифра 2 = <code>0010</code>, цифра 5 = <code>0101</code> → пишем <b>0010 0101</b>. Не путать с обычным двоичным переводом всего числа!</p>
+  </div>
+  <div class="card">
+    <h4>Двоично-шестнадцатеричная</h4>
+    <p>16-ричная цифра = ровно 4 бита. 0–9 как есть, дальше A=10, B=11, C=12, D=13, E=14, F=15. Пример: <b>0xA</b> = <code>1010</code>, <b>0xF</b> = <code>1111</code>. Чтобы перевести двоичное в hex — бьёшь на группы по 4 бита справа.</p>
+  </div>
+</section>
+
+<!-- ============ Q2 DEVICES ============ -->
+<section id="mc_q2" class="subj-mc">
+  <h2>Вопрос 2 — Цифровые устройства</h2>
+  <p class="mut">Тут рассказываешь что это, рисуешь прямоугольник с входами/выходами и (где нужно) таблицу. Коротко и по делу.</p>
+
+  <div class="card">
+    <h4>Дешифратор (на 2 / 3 / 4 входа, для 7-сегм.)</h4>
+    <p>Превращает двоичный код на входе в активный сигнал на <b>одном</b> из выходов. n входов → 2ⁿ выходов. Например 2 входа → 4 выхода (один из 4 загорается в зависимости от кода 00/01/10/11).</p>
+    <table><tr><th>A1</th><th>A0</th><th>Активный выход</th></tr><tr><td>0</td><td>0</td><td>Y0</td></tr><tr><td>0</td><td>1</td><td>Y1</td></tr><tr><td>1</td><td>0</td><td>Y2</td></tr><tr><td>1</td><td>1</td><td>Y3</td></tr></table>
+    <p class="mut">Дешифратор для 7-сегментного индикатора превращает 4-битный код (0–9) в сигналы для 7 сегментов, чтобы показать цифру.</p>
+  </div>
+
+  <div class="card">
+    <h4>Шифратор (Encoder)</h4>
+    <p>Обратное дешифратору. На входе активен один из 2ⁿ сигналов → на выходе его номер в двоичном коде. 4 входа → 2 выхода.</p>
+  </div>
+
+  <div class="card">
+    <h4>Мультиплексор (MUX, на 2/4/5/7 входов)</h4>
+    <p>Переключатель: из нескольких входов данных пропускает на единственный выход <b>тот, что выбран адресными линиями</b>. Как «выбор канала».</p>
+  </div>
+
+  <div class="card">
+    <h4>Демультиплексор (DEMUX, на 4 выхода)</h4>
+    <p>Обратное MUX. Один вход данных направляет на <b>один из нескольких выходов</b>, выбранный адресом.</p>
+  </div>
+
+  <div class="card">
+    <h4>Полусумматор и сумматор</h4>
+    <p><b>Полусумматор</b>: складывает 2 бита, даёт сумму S и перенос C. <b>Сумматор</b> (полный): складывает ещё и перенос из предыдущего разряда (3 входа).</p>
+    <table><tr><th>A</th><th>B</th><th>S (сумма)</th><th>C (перенос)</th></tr><tr><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>0</td><td>1</td><td>1</td><td>0</td></tr><tr><td>1</td><td>0</td><td>1</td><td>0</td></tr><tr><td>1</td><td>1</td><td>0</td><td>1</td></tr></table>
+  </div>
+
+  <h3>Триггеры (запоминают 1 бит)</h3>
+  <div class="card">
+    <h4>RS-триггер</h4>
+    <p>S (Set) = установить в 1, R (Reset) = сбросить в 0. S=R=1 — запрещённая комбинация. Хранит состояние, пока не подадут новый сигнал.</p>
+    <table><tr><th>S</th><th>R</th><th>Q</th></tr><tr><td>0</td><td>0</td><td>хранит</td></tr><tr><td>0</td><td>1</td><td>0</td></tr><tr><td>1</td><td>0</td><td>1</td></tr><tr><td>1</td><td>1</td><td>запрет</td></tr></table>
+  </div>
+  <div class="card">
+    <h4>D-триггер</h4>
+    <p>«Защёлка». По фронту такта запоминает то, что на входе D. Q = D в момент тактового импульса.</p>
+  </div>
+  <div class="card">
+    <h4>T-триггер</h4>
+    <p>«Счётный». Если T=1, на каждом такте Q переключается в противоположное (0↔1). Делит частоту на 2.</p>
+  </div>
+  <div class="card">
+    <h4>JK-триггер</h4>
+    <p>Универсальный. J и K как S и R, но комбинация J=K=1 не запрещена — переключает Q в противоположное (как T).</p>
+    <table><tr><th>J</th><th>K</th><th>Q</th></tr><tr><td>0</td><td>0</td><td>хранит</td></tr><tr><td>0</td><td>1</td><td>0</td></tr><tr><td>1</td><td>0</td><td>1</td></tr><tr><td>1</td><td>1</td><td>переключ.</td></tr></table>
+  </div>
+
+  <h3>Регистры</h3>
+  <div class="card">
+    <p><b>Параллельный регистр (4/8-бит)</b> — хранит несколько бит, все загружаются/читаются одновременно. <b>Параллельно-последовательный</b> — загрузка всех бит сразу, выдача по одному. <b>Последовательно-параллельный</b> — наоборот: вводишь по биту, читаешь все сразу. Это набор триггеров.</p>
+  </div>
+
+  <h3>Прочее (микропроцессор, интерфейсы)</h3>
+  <div class="card">
+    <ul>
+      <li><b>Микроконтроллер</b> — мини-компьютер на одном чипе: процессор + память + порты ввода-вывода. Управляет устройствами (Arduino — на нём).</li>
+      <li><b>АЛУ</b> — арифметико-логическое устройство, ядро процессора. Выполняет арифметику (+, −) и логику (И, ИЛИ, НЕ, XOR и сдвиги).</li>
+      <li><b>Типовая микропроцессорная система</b> — процессор + память (ОЗУ/ПЗУ) + устройства ввода-вывода, связанные шинами (адреса, данных, управления).</li>
+      <li><b>SPI</b> — быстрый последовательный интерфейс, 4 провода (MOSI, MISO, SCK, SS). Связь чипов «ведущий-ведомый».</li>
+      <li><b>I2C / TWI</b> — двухпроводной интерфейс (SDA — данные, SCL — такт). Много устройств на 2 проводах по адресам.</li>
+      <li><b>UART (УАПП)</b> — асинхронный последовательный обмен по 2 линиям (TX/RX), без отдельного такта.</li>
+      <li><b>TTL</b> — транзисторно-транзисторная логика, технология построения логических элементов на биполярных транзисторах, уровни 0В/5В.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ Q3 CODE+BUILD ============ -->
+<section id="mc_q3" class="subj-mc">
+  <h2>Вопрос 3 — Сборка + Код</h2>
+  <div class="warnbox"><b>Перед всем:</b> tinkercad.com → Circuits → Create new Circuit. Слева панель деталей. Перетаскиваешь Arduino Uno и Breadboard (макетка) на поле. Провод тянешь кликом от ножки к ножке. Код: кнопка <b>Code</b> справа сверху → переключи на <b>Text</b> → сотри пример → вставь мой код → <b>Start Simulation</b>.</div>
+
+  <!-- З.A -->
+  <details open>
+  <summary>🔆 Задача A — Светодиод горит постоянно / мигает (база)</summary>
+  <div class="in">
+  <p class="big">Детали: Arduino, 1 светодиод, 1 резистор 220 Ом.</p>
+  <p><b>Сборка:</b></p>
+  <ul>
+    <li>Длинная ножка (+) светодиода → провод на пин <span class="pin">13</span></li>
+    <li>Короткая ножка (−) → резистор 220 Ом → пин <span class="pin">GND</span></li>
+  </ul>
+  <p><b>Код (мигание):</b></p>
+  <pre><button class="copy">копировать</button><code>void setup() {
+  pinMode(13, OUTPUT);
+}
+void loop() {
+  digitalWrite(13, HIGH);
+  delay(1000);
+  digitalWrite(13, LOW);
+  delay(1000);
+}</code></pre>
+  <p class="mut">Чтобы просто «горел постоянно» — убери loop-мигание, оставь digitalWrite(13, HIGH).</p>
+  </div>
+  </details>
+
+  <!-- З.B -->
+  <details>
+  <summary>🔘 Задача B — Кнопка включает светодиод (пока нажата)</summary>
+  <div class="in">
+  <p class="big">Билеты 3, 4. Детали: Arduino, светодиод, резистор 220 Ом, кнопка.</p>
+  <p><b>Сборка:</b></p>
+  <ul>
+    <li>Светодиод: (+) → пин <span class="pin">13</span>, (−) → резистор → <span class="pin">GND</span></li>
+    <li>Кнопка: одна ножка → пин <span class="pin">2</span>, та же сторона → резистор 10кОм → <span class="pin">GND</span>; другая ножка кнопки → <span class="pin">5V</span></li>
+  </ul>
+  <p><b>Код (билет 3 — нажал = горит, билет 4 — нажал = гаснет — см. ниже):</b></p>
+  <pre><button class="copy">копировать</button><code>void setup() {
+  pinMode(2, INPUT);
+  pinMode(13, OUTPUT);
+}
+void loop() {
+  if (digitalRead(2) == HIGH) {
+    digitalWrite(13, HIGH);   // нажал — горит
+  } else {
+    digitalWrite(13, LOW);
+  }
+}</code></pre>
+  <p class="mut">Для билета 4 (нажал — гаснет): поменяй местами HIGH и LOW внутри if/else.</p>
+  </div>
+  </details>
+
+  <!-- З.C -->
+  <details>
+  <summary>🔁 Задача C — Кнопка переключает (нажал-вкл, ещё раз-выкл)</summary>
+  <div class="in">
+  <p class="big">Билеты 6, 22. То же подключение, что в задаче B.</p>
+  <pre><button class="copy">копировать</button><code>int state = LOW;
+int last = LOW;
+void setup() {
+  pinMode(2, INPUT);
+  pinMode(13, OUTPUT);
+}
+void loop() {
+  int btn = digitalRead(2);
+  if (btn == HIGH && last == LOW) {
+    state = !state;
+    digitalWrite(13, state);
+    delay(200);
+  }
+  last = btn;
+}</code></pre>
+  </div>
+  </details>
+
+  <!-- З.D -->
+  <details>
+  <summary>🌑 Задача D — Фоторезистор (темно → диод вкл/выкл)</summary>
+  <div class="in">
+  <p class="big">Билеты 1, 2, 23, 26, 27. Детали: Arduino, фоторезистор, резистор 10кОм, светодиод, резистор 220 Ом.</p>
+  <p><b>Сборка:</b></p>
+  <ul>
+    <li>Фоторезистор: одна ножка → <span class="pin">5V</span>; другая ножка → одновременно на пин <span class="pin">A0</span> и через резистор 10кОм на <span class="pin">GND</span></li>
+    <li>Светодиод: (+) → пин <span class="pin">13</span>, (−) → резистор 220 → <span class="pin">GND</span></li>
+  </ul>
+  <p><b>Код (темно → ВКЛючается):</b></p>
+  <pre><button class="copy">копировать</button><code>void setup() {
+  pinMode(13, OUTPUT);
+}
+void loop() {
+  int light = analogRead(A0);
+  if (light &lt; 500) {       // темно
+    digitalWrite(13, HIGH);
+  } else {
+    digitalWrite(13, LOW);
+  }
+}</code></pre>
+  <p class="mut">Темно → ВЫКЛючается (билеты 2, 27): поменяй HIGH и LOW местами.</p>
+  </div>
+  </details>
+
+  <!-- З.E -->
+  <details>
+  <summary>🎛️ Задача E — Потенциометр меняет яркость диода</summary>
+  <div class="in">
+  <p class="big">Билеты 5, 28. Детали: Arduino, потенциометр, светодиод, резистор 220 Ом.</p>
+  <p><b>Сборка:</b></p>
+  <ul>
+    <li>Потенциометр: крайние ножки → <span class="pin">5V</span> и <span class="pin">GND</span>; средняя ножка → пин <span class="pin">A0</span></li>
+    <li>Светодиод: (+) → пин <span class="pin">9</span> (ШИМ ~), (−) → резистор → <span class="pin">GND</span></li>
+  </ul>
+  <pre><button class="copy">копировать</button><code>void setup() {
+  pinMode(9, OUTPUT);
+}
+void loop() {
+  int val = analogRead(A0);        // 0..1023
+  int bright = map(val, 0, 1023, 0, 255);
+  analogWrite(9, bright);
+}</code></pre>
+  </div>
+  </details>
+
+  <!-- З.F -->
+  <details>
+  <summary>🚦 Задача F — «Бегущий огонь» (3 светодиода по очереди)</summary>
+  <div class="in">
+  <p class="big">Билеты 12, 27. Детали: Arduino, 3 светодиода, 3 резистора 220 Ом.</p>
+  <p><b>Сборка:</b> диоды на пины <span class="pin">8</span>, <span class="pin">9</span>, <span class="pin">10</span>; каждый (−) через резистор → <span class="pin">GND</span>.</p>
+  <pre><button class="copy">копировать</button><code>int leds[] = {8, 9, 10};
+void setup() {
+  for (int i = 0; i &lt; 3; i++) pinMode(leds[i], OUTPUT);
+}
+void loop() {
+  for (int i = 0; i &lt; 3; i++) {
+    digitalWrite(leds[i], HIGH);
+    delay(300);
+    digitalWrite(leds[i], LOW);
+  }
+}</code></pre>
+  </div>
+  </details>
+
+  <!-- З.G -->
+  <details>
+  <summary>➡️ Задача G — Накопление / выключение 4 диодов</summary>
+  <div class="in">
+  <p class="big">Билеты 13, 14, 15. Детали: Arduino, 4 светодиода, 4 резистора. Пины 7,8,9,10.</p>
+  <p><b>Накопление (1,2,3,4 загораются по очереди и остаются) — билет 14:</b></p>
+  <pre><button class="copy">копировать</button><code>int leds[] = {7, 8, 9, 10};
+void setup() {
+  for (int i = 0; i &lt; 4; i++) pinMode(leds[i], OUTPUT);
+}
+void loop() {
+  for (int i = 0; i &lt; 4; i++) {
+    digitalWrite(leds[i], HIGH);
+    delay(500);
+  }
+  delay(1000);
+  for (int i = 0; i &lt; 4; i++) digitalWrite(leds[i], LOW);
+}</code></pre>
+  <p class="mut">Выключение 4,3,2,1 (билет 15): зажги все в setup, в loop гаси по очереди от последнего: <code>for(int i=3;i&gt;=0;i--)</code>.</p>
+  </div>
+  </details>
+
+  <!-- З.H -->
+  <details>
+  <summary>🌈 Задача H — RGB-светодиод, плавная смена цветов</summary>
+  <div class="in">
+  <p class="big">Билеты 16, 20. Детали: Arduino, RGB-светодиод, 3 резистора 220 Ом.</p>
+  <p><b>Сборка:</b> ножки R, G, B → пины <span class="pin">9</span>, <span class="pin">10</span>, <span class="pin">11</span> (через резисторы); общая ножка → <span class="pin">GND</span> (катодный RGB).</p>
+  <pre><button class="copy">копировать</button><code>void setup() {
+  pinMode(9, OUTPUT);
+  pinMode(10, OUTPUT);
+  pinMode(11, OUTPUT);
+}
+void loop() {
+  for (int i = 0; i &lt; 256; i++) { analogWrite(9, i); delay(5); }
+  for (int i = 0; i &lt; 256; i++) { analogWrite(10, i); delay(5); }
+  for (int i = 0; i &lt; 256; i++) { analogWrite(11, i); delay(5); }
+}</code></pre>
+  </div>
+  </details>
+
+  <!-- З.I -->
+  <details>
+  <summary>🎨 Задача I — RGB переключение по цветам (красный→…→фиолетовый)</summary>
+  <div class="in">
+  <p class="big">Билеты 17, 29. Та же сборка, что в задаче H.</p>
+  <pre><button class="copy">копировать</button><code>void setColor(int r, int g, int b) {
+  analogWrite(9, r);
+  analogWrite(10, g);
+  analogWrite(11, b);
+}
+void setup() {
+  pinMode(9, OUTPUT); pinMode(10, OUTPUT); pinMode(11, OUTPUT);
+}
+void loop() {
+  setColor(255, 0, 0);   delay(700); // красный
+  setColor(255, 50, 0);  delay(700); // оранжевый
+  setColor(255, 255, 0); delay(700); // жёлтый
+  setColor(0, 255, 0);   delay(700); // зелёный
+  setColor(0, 255, 255); delay(700); // голубой
+  setColor(0, 0, 255);   delay(700); // синий
+  setColor(255, 0, 255); delay(700); // фиолетовый
+}</code></pre>
+  </div>
+  </details>
+
+  <!-- З.J -->
+  <details>
+  <summary>🔀 Задача J — 3 кнопки → RGB один из 3 цветов</summary>
+  <div class="in">
+  <p class="big">Билеты 19, 24. Детали: Arduino, 3 кнопки, RGB, резисторы.</p>
+  <p><b>Сборка:</b> кнопки на пины <span class="pin">2</span>, <span class="pin">3</span>, <span class="pin">4</span> (каждая: ножка→пин и через 10к→GND, другая ножка→5V). RGB на 9,10,11.</p>
+  <pre><button class="copy">копировать</button><code>void setup() {
+  pinMode(2, INPUT); pinMode(3, INPUT); pinMode(4, INPUT);
+  pinMode(9, OUTPUT); pinMode(10, OUTPUT); pinMode(11, OUTPUT);
+}
+void loop() {
+  if (digitalRead(2) == HIGH) { analogWrite(9,255); analogWrite(10,0); analogWrite(11,0); }
+  if (digitalRead(3) == HIGH) { analogWrite(9,0); analogWrite(10,255); analogWrite(11,0); }
+  if (digitalRead(4) == HIGH) { analogWrite(9,0); analogWrite(10,0); analogWrite(11,255); }
+}</code></pre>
+  </div>
+  </details>
+
+  <!-- З.K -->
+  <details>
+  <summary>🎚️ Задача K — 3 потенциометра → яркость RGB</summary>
+  <div class="in">
+  <p class="big">Билеты 18, 25. Детали: Arduino, 3 потенциометра, RGB, резисторы.</p>
+  <p><b>Сборка:</b> средние ножки потенциометров → <span class="pin">A0</span>, <span class="pin">A1</span>, <span class="pin">A2</span>; крайние → 5V и GND. RGB на 9,10,11.</p>
+  <pre><button class="copy">копировать</button><code>void setup() {
+  pinMode(9, OUTPUT); pinMode(10, OUTPUT); pinMode(11, OUTPUT);
+}
+void loop() {
+  analogWrite(9,  map(analogRead(A0), 0, 1023, 0, 255));
+  analogWrite(10, map(analogRead(A1), 0, 1023, 0, 255));
+  analogWrite(11, map(analogRead(A2), 0, 1023, 0, 255));
+}</code></pre>
+  </div>
+  </details>
+
+  <!-- З.L -->
+  <details>
+  <summary>⚡ Задача L — Триггеры на кнопках (T / RS / D / JK)</summary>
+  <div class="in">
+  <p class="big">Билеты 7, 8, 9, 10, 11. Детали: Arduino, 1–3 кнопки, 2 светодиода.</p>
+  <p class="mut">Сборка: кнопки на пины 2,3,4 (через 10к на GND, +5V); диоды на 12 и 13 (через 220 на GND).</p>
+  <p><b>T-триггер (билеты 7, 10) — 1 кнопка переключает 2 диода:</b></p>
+  <pre><button class="copy">копировать</button><code>int state = 0, last = LOW;
+void setup() {
+  pinMode(2, INPUT);
+  pinMode(12, OUTPUT); pinMode(13, OUTPUT);
+}
+void loop() {
+  int b = digitalRead(2);
+  if (b == HIGH && last == LOW) { state = !state; delay(200); }
+  last = b;
+  digitalWrite(12, state);
+  digitalWrite(13, !state);
+}</code></pre>
+  <p><b>RS / D / JK</b> — то же по сути: кнопка(и) задают, какой диод горит. Для билета 8 (нажал — первый горит/второй нет, ещё раз — наоборот) подходит код выше. Для RS/D/JK на 2 кнопки: одна кнопка → диод1 (Set), вторая → диод2 (Reset):</p>
+  <pre><button class="copy">копировать</button><code>void setup() {
+  pinMode(2, INPUT); pinMode(3, INPUT);
+  pinMode(12, OUTPUT); pinMode(13, OUTPUT);
+}
+void loop() {
+  if (digitalRead(2) == HIGH) { digitalWrite(12, HIGH); digitalWrite(13, LOW); }
+  if (digitalRead(3) == HIGH) { digitalWrite(12, LOW);  digitalWrite(13, HIGH); }
+}</code></pre>
+  </div>
+  </details>
+
+</section>
+
+<!-- ============ BILETS ============ -->
+<section id="mc_bilet" class="subj-mc">
+  <h2>Билеты 1–30 — навигатор</h2>
+  <p class="mut">Находишь свой номер → видишь, что в вопросах 1, 2 и какая задача в вопросе 3 (буква = вкладка «В.3»).</p>
+  <table style="font-size:12px">
+    <tr><th>№</th><th>Вопрос 1</th><th>Вопрос 2</th><th>В.3</th></tr>
+    <tr><td>1</td><td>Двоично-десятичная СС</td><td>4-бит АЛУ</td><td>D темно→вкл</td></tr>
+    <tr><td>2</td><td>Двоично-16-ричная СС</td><td>Микроконтроллер</td><td>D темно→выкл</td></tr>
+    <tr><td>3</td><td>НЕ</td><td>Дешифратор 2 вх.</td><td>B нажал→вкл</td></tr>
+    <tr><td>4</td><td>2 И</td><td>Дешифратор 3 вх.</td><td>B нажал→выкл</td></tr>
+    <tr><td>5</td><td>3 И</td><td>Дешифратор 4 вх.</td><td>E потенц.</td></tr>
+    <tr><td>6</td><td>4 И</td><td>Дешифратор 7-сегм.</td><td>C переключ.</td></tr>
+    <tr><td>7</td><td>5 И</td><td>Шифратор</td><td>L T-триггер</td></tr>
+    <tr><td>8</td><td>Исключ. ИЛИ</td><td>RS-триггер</td><td>L переключ. 2 LED</td></tr>
+    <tr><td>9</td><td>7 И</td><td>D-триггер</td><td>L RS-триггер</td></tr>
+    <tr><td>10</td><td>8 И</td><td>T-триггер</td><td>L JK-триггер</td></tr>
+    <tr><td>11</td><td>2 ИЛИ</td><td>JK-триггер</td><td>L D-триггер</td></tr>
+    <tr><td>12</td><td>Исключ. ИЛИ-НЕ</td><td>Параллельный 4-бит регистр</td><td>F бегущий огонь</td></tr>
+    <tr><td>13</td><td>4 ИЛИ</td><td>Параллельный 8-бит регистр</td><td>G движение 2 LED</td></tr>
+    <tr><td>14</td><td>5 ИЛИ</td><td>Парал.-послед. регистр</td><td>G накопление</td></tr>
+    <tr><td>15</td><td>6 ИЛИ</td><td>Послед.-парал. регистр</td><td>G выключение 4→1</td></tr>
+    <tr><td>16</td><td>7 ИЛИ</td><td>Полусумматор</td><td>H RGB плавно</td></tr>
+    <tr><td>17</td><td>8 ИЛИ</td><td>Сумматор</td><td>I RGB по цветам</td></tr>
+    <tr><td>18</td><td>2 И-НЕ</td><td>АЛУ (операции)</td><td>K 3 потенц.→RGB</td></tr>
+    <tr><td>19</td><td>3 И-НЕ</td><td>Мультиплексор 5 вх.</td><td>J 3 кнопки→RGB</td></tr>
+    <tr><td>20</td><td>4 И-НЕ</td><td>SPI</td><td>H RGB плавно</td></tr>
+    <tr><td>21</td><td>5 И-НЕ</td><td>Мультиплексор 7 вх.</td><td>B нажал→выкл</td></tr>
+    <tr><td>22</td><td>6 И-НЕ</td><td>Мультиплексор 4 вх.</td><td>C переключ.</td></tr>
+    <tr><td>23</td><td>7 И-НЕ</td><td>UART (синхр.)</td><td>D темно→вкл</td></tr>
+    <tr><td>24</td><td>8 И-НЕ</td><td>Мультиплексор 2 вх.</td><td>J 3 кнопки→RGB</td></tr>
+    <tr><td>25</td><td>2 ИЛИ-НЕ</td><td>Микропроц. система</td><td>K 3 потенц.→RGB</td></tr>
+    <tr><td>26</td><td>3 ИЛИ-НЕ</td><td>UART (УАПП)</td><td>D темно→выкл</td></tr>
+    <tr><td>27</td><td>4 ИЛИ-НЕ</td><td>TWI (I2C)</td><td>F бегущий огонь</td></tr>
+    <tr><td>28</td><td>5 ИЛИ-НЕ</td><td>Демультиплексор 4 вых.</td><td>E потенц.</td></tr>
+    <tr><td>29</td><td>6 ИЛИ-НЕ</td><td>I2C шина</td><td>I RGB по цветам</td></tr>
+    <tr><td>30</td><td>7 ИЛИ-НЕ</td><td>TTL (ТТЛ)</td><td>B нажал→вкл</td></tr>
+  </table>
+  <div class="okbox">Заметь: задачи в В.3 повторяются. Освоишь буквы <b>B, D, E, H</b> — и закроешь большинство билетов. Триггеры (L) и RGB (H, I, J, K) — вторая по частоте группа.</div>
+</section>
+
+<section id="py_start" class="subj-py">
+  <h2>Как сдавать</h2>
+  <div class="okbox">Экзамен = <b>теория устно</b> (вопросы 1–60) + <b>задача на ПК</b>. Инет есть → открываешь эту шпору, находишь свою задачу, копируешь код, запускаешь.</div>
+  <div class="card">
+    <h4>Python — где запускать</h4>
+    <p>Скорее всего стоит <b>IDLE</b> или <b>PyCharm/VS Code</b>. Самое простое — IDLE: File → New File → вставь код → F5 (Run). Или онлайн: <b>onlinegdb.com</b>, <b>replit.com</b>.</p>
+  </div>
+  <div class="card">
+    <h4>Android — где запускать</h4>
+    <p>Android Studio. Создаёшь проект (Empty Views Activity), правишь два файла: <b>activity_main.xml</b> (разметка, вкладка дизайна) и <b>MainActivity</b> (логика, Kotlin или Java). Запуск — зелёный ▶ на эмуляторе.</p>
+    <div class="warnbox"><b>Если Android совсем не идёт:</b> сделай упор на Python-задачи и теорию — там баллы вернее. Android-код ниже даю готовый, но сборка проекта на незнакомом компе может занять время.</div>
+  </div>
+</section>
+
+<section id="py_pytask" class="subj-py">
+  <h2>Python / Tkinter — решения</h2>
+  <p class="mut">Все коды проверены и работают. Жми на задачу, копируй, запускай.</p>
+
+  <details class="q" open><summary>Task1 — квадрат отрицательных, куб положительных (0 не трогать)</summary><div class="in">
+  <pre><button class="copy">копировать</button><code>nums = [int(input("Число: ")) for _ in range(3)]
+res = []
+for n in nums:
+    if n &lt; 0:
+        res.append(n ** 2)
+    elif n &gt; 0:
+        res.append(n ** 3)
+    else:
+        res.append(0)
+print(res)</code></pre></div></details>
+
+  <details class="q"><summary>Task4 — наименьшее и наибольшее из трёх</summary><div class="in">
+  <pre><button class="copy">копировать</button><code>a = int(input("a: "))
+b = int(input("b: "))
+c = int(input("c: "))
+print("Наименьшее:", min(a, b, c))
+print("Наибольшее:", max(a, b, c))</code></pre></div></details>
+
+  <details class="q"><summary>3 — сумма квадратов vs квадрат суммы</summary><div class="in">
+  <pre><button class="copy">копировать</button><code>a = int(input("a: "))
+b = int(input("b: "))
+sum_of_sq = a**2 + b**2
+sq_of_sum = (a + b)**2
+if sq_of_sum &gt; sum_of_sq:
+    print("Квадрат суммы больше:", sq_of_sum)
+elif sum_of_sq &gt; sq_of_sum:
+    print("Сумма квадратов больше:", sum_of_sq)
+else:
+    print("Они равны")</code></pre></div></details>
+
+  <details class="q"><summary>4 — прямоугольный ли треугольник</summary><div class="in">
+  <pre><button class="copy">копировать</button><code>a = float(input("a: "))
+b = float(input("b: "))
+c = float(input("c: "))
+s = sorted([a, b, c])
+if abs(s[0]**2 + s[1]**2 - s[2]**2) &lt; 0.0001:
+    print("Прямоугольный")
+else:
+    print("Не прямоугольный")</code></pre></div></details>
+
+  <details class="q"><summary>5 — периметр и площадь по катетам a, b</summary><div class="in">
+  <pre><button class="copy">копировать</button><code>import math
+a = float(input("Катет a: "))
+b = float(input("Катет b: "))
+c = math.sqrt(a**2 + b**2)
+print("Периметр:", a + b + c)
+print("Площадь:", a * b / 2)</code></pre></div></details>
+
+  <details class="q"><summary>6 — площадь круга по длине окружности</summary><div class="in">
+  <pre><button class="copy">копировать</button><code>L = float(input("Длина окружности: "))
+r = L / (2 * 3.14)
+S = 3.14 * r * r
+print("Площадь круга:", S)</code></pre></div></details>
+
+  <details class="q"><summary>7 — произведение через сложение (2 способа)</summary><div class="in">
+  <pre><button class="copy">копировать</button><code>x = int(input("x: "))
+y = int(input("y: "))
+
+# Способ 1: цикл
+p = 0
+for i in range(y):
+    p += x
+print("Способ 1:", p)
+
+# Способ 2: while
+p2 = 0
+k = y
+while k &gt; 0:
+    p2 += x
+    k -= 1
+print("Способ 2:", p2)</code></pre></div></details>
+
+  <details class="q"><summary>8 — все числа между A и B + их количество</summary><div class="in">
+  <pre><button class="copy">копировать</button><code>A = int(input("A: "))
+B = int(input("B: "))
+nums = list(range(A, B + 1))
+print("Числа:", nums)
+print("Количество N:", len(nums))</code></pre></div></details>
+
+  <details class="q"><summary>9 — посчитать русскую букву «А» в строке</summary><div class="in">
+  <pre><button class="copy">копировать</button><code>s = input("Строка: ")
+# считаем и заглавную А, и строчную а — убери .lower() если нужна только А
+count = s.count("А") + s.count("а")
+print("Количество букв А:", count)</code></pre></div></details>
+
+  <details class="q"><summary>10 — удалить 2-й и 4-й символы</summary><div class="in">
+  <pre><button class="copy">копировать</button><code>s = input("Строка: ")
+res = ""
+for i in range(len(s)):
+    if i != 1 and i != 3:   # индексы 1 и 3 = 2-й и 4-й символы
+        res += s[i]
+print(res)</code></pre></div></details>
+
+  <details class="q"><summary>11 — класс Persona, дни до дня рождения</summary><div class="in">
+  <pre><button class="copy">копировать</button><code>from datetime import date
+
+class Persona:
+    def __init__(self, fio, birth_month, birth_day, address):
+        self.fio = fio
+        self.birth_month = birth_month
+        self.birth_day = birth_day
+        self.address = address
+
+    def days_to_birthday(self):
+        today = date.today()
+        bd = date(today.year, self.birth_month, self.birth_day)
+        if bd &lt; today:
+            bd = date(today.year + 1, self.birth_month, self.birth_day)
+        return (bd - today).days
+
+p = Persona("Иванов Иван", 12, 31, "Алматы")
+print(p.fio, "- дней до ДР:", p.days_to_birthday())</code></pre></div></details>
+
+  <details class="q"><summary>12 — заменить «бяка» на «вырезано цензурой»</summary><div class="in">
+  <pre><button class="copy">копировать</button><code>def cenz(text):
+    return text.replace("бяка", "вырезано цензурой")
+
+s = input("Строка: ")
+print(cenz(s))</code></pre></div></details>
+
+  <details class="q"><summary>13 — массив в обратном порядке</summary><div class="in">
+  <pre><button class="copy">копировать</button><code>n = int(input("Размер N: "))
+arr = []
+for i in range(n):
+    arr.append(int(input("Элемент: ")))
+print("Обратный порядок:", arr[::-1])</code></pre></div></details>
+
+  <details class="q"><summary>14 — 10 первых нечётных чисел в строку через запятую</summary><div class="in">
+  <pre><button class="copy">копировать</button><code>arr = []
+for i in range(10):
+    arr.append(2 * i + 1)   # 1,3,5,...,19
+print(", ".join(map(str, arr)))</code></pre></div></details>
+
+  <details class="q"><summary>15 — Tkinter форма с Button, Label, Entry</summary><div class="in">
+  <pre><button class="copy">копировать</button><code>import tkinter as tk
+from tkinter import messagebox
+
+win = tk.Tk()
+win.title("Форма")
+win.geometry("300x200")
+
+lbl = tk.Label(win, text="Это метка", bg="lightblue", fg="black")
+lbl.pack(pady=10)
+
+ent = tk.Entry(win, bg="white", fg="blue")
+ent.pack(pady=10)
+
+def on_click():
+    messagebox.showinfo("Сообщение", "Кнопка нажата! Ввод: " + ent.get())
+
+btn = tk.Button(win, text="Нажми", bg="green", fg="white", command=on_click)
+btn.pack(pady=10)
+
+win.mainloop()</code></pre></div></details>
+
+  <details class="q"><summary>16 — строку S привести к длине N (обрезать/дополнить точками)</summary><div class="in">
+  <pre><button class="copy">копировать</button><code>S = input("Строка S: ")
+N = int(input("Длина N: "))
+if len(S) &gt; N:
+    result = S[len(S) - N:]        # отбросить первые символы
+else:
+    result = "." * (N - len(S)) + S  # дополнить точками в начало
+print(result)</code></pre></div></details>
+
+  <details class="q"><summary>17 — строка из малых латинских букв по алфавиту</summary><div class="in">
+  <pre><button class="copy">копировать</button><code>import string
+print(string.ascii_lowercase)
+
+# или без модуля:
+result = ""
+for c in range(ord('a'), ord('z') + 1):
+    result += chr(c)
+print(result)</code></pre></div></details>
+
+  <details class="q"><summary>18 — Tkinter графика: линии, прямоугольник, круг, текст</summary><div class="in">
+  <pre><button class="copy">копировать</button><code>import tkinter as tk
+
+win = tk.Tk()
+win.title("Графика")
+c = tk.Canvas(win, width=400, height=300, bg="white")
+c.pack()
+
+c.create_line(10, 10, 200, 10, fill="red", width=2)
+c.create_rectangle(50, 50, 150, 120, fill="lightblue", outline="black")
+c.create_oval(200, 50, 300, 150, fill="yellow", outline="green")
+c.create_text(150, 200, text="Привет, Tkinter!", font=("Arial", 16), fill="black")
+
+win.mainloop()</code></pre></div></details>
+
+</section>
+
+<section id="py_antask" class="subj-py">
+  <h2>Android — решения</h2>
+  <div class="warnbox"><b>Как пользоваться:</b> в проекте Android Studio два главных файла. <b>res/layout/activity_main.xml</b> — что на экране. <b>MainActivity.kt</b> (или .java) — логика. Ниже для каждой задачи даю оба. Создавай проект как <b>Empty Views Activity</b>.</div>
+
+  <details class="q" open><summary>1 — Кнопка показывает сообщение (Toast)</summary><div class="in">
+  <p class="big">activity_main.xml:</p>
+  <pre><button class="copy">копировать</button><code>&lt;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"&gt;
+    &lt;Button
+        android:id="@+id/btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Нажми меня" /&gt;
+&lt;/LinearLayout&gt;</code></pre>
+  <p class="big">MainActivity.kt:</p>
+  <pre><button class="copy">копировать</button><code>import android.os.Bundle
+import android.widget.Button
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        val btn = findViewById&lt;Button&gt;(R.id.btn)
+        btn.setOnClickListener {
+            Toast.makeText(this, "Кнопка нажата!", Toast.LENGTH_SHORT).show()
+        }
+    }
+}</code></pre></div></details>
+
+  <details class="q"><summary>2 — Видеоплеер (VideoView)</summary><div class="in">
+  <p class="big">activity_main.xml:</p>
+  <pre><button class="copy">копировать</button><code>&lt;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"&gt;
+    &lt;VideoView
+        android:id="@+id/video"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" /&gt;
+&lt;/LinearLayout&gt;</code></pre>
+  <p class="big">MainActivity.kt:</p>
+  <pre><button class="copy">копировать</button><code>import android.net.Uri
+import android.os.Bundle
+import android.widget.MediaController
+import android.widget.VideoView
+import androidx.appcompat.app.AppCompatActivity
+
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        val video = findViewById&lt;VideoView&gt;(R.id.video)
+        // положи video.mp4 в папку res/raw/
+        val uri = Uri.parse("android.resource://$packageName/${R.raw.video}")
+        video.setVideoURI(uri)
+        val mc = MediaController(this)
+        video.setMediaController(mc)
+        mc.setAnchorView(video)
+        video.start()
+    }
+}</code></pre>
+  <p class="mut">Создай папку res/raw и положи туда video.mp4.</p></div></details>
+
+  <details class="q"><summary>3 — Аудиоплеер (MediaPlayer)</summary><div class="in">
+  <p class="big">activity_main.xml — две кнопки Play/Stop (id: play, stop). MainActivity.kt:</p>
+  <pre><button class="copy">копировать</button><code>import android.media.MediaPlayer
+import android.os.Bundle
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
+
+class MainActivity : AppCompatActivity() {
+    private lateinit var mp: MediaPlayer
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        // положи song.mp3 в res/raw/
+        mp = MediaPlayer.create(this, R.raw.song)
+        findViewById&lt;Button&gt;(R.id.play).setOnClickListener { mp.start() }
+        findViewById&lt;Button&gt;(R.id.stop).setOnClickListener {
+            if (mp.isPlaying) { mp.pause(); mp.seekTo(0) }
+        }
+    }
+}</code></pre></div></details>
+
+  <details class="q"><summary>4 — Сменить картинку по нажатию кнопки</summary><div class="in">
+  <p class="big">activity_main.xml — ImageView (id: img) + Button (id: btn). Картинки img1, img2 в res/drawable. MainActivity.kt:</p>
+  <pre><button class="copy">копировать</button><code>import android.os.Bundle
+import android.widget.Button
+import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
+
+class MainActivity : AppCompatActivity() {
+    private var flag = true
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        val img = findViewById&lt;ImageView&gt;(R.id.img)
+        findViewById&lt;Button&gt;(R.id.btn).setOnClickListener {
+            if (flag) img.setImageResource(R.drawable.img2)
+            else img.setImageResource(R.drawable.img1)
+            flag = !flag
+        }
+    }
+}</code></pre></div></details>
+
+  <details class="q"><summary>5 — ArrayAdapter (список в ListView)</summary><div class="in">
+  <p class="big">activity_main.xml — ListView (id: list). MainActivity.kt:</p>
+  <pre><button class="copy">копировать</button><code>import android.os.Bundle
+import android.widget.ArrayAdapter
+import android.widget.ListView
+import androidx.appcompat.app.AppCompatActivity
+
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        val data = arrayOf("Яблоко", "Банан", "Апельсин", "Груша")
+        val adapter = ArrayAdapter(this,
+            android.R.layout.simple_list_item_1, data)
+        findViewById&lt;ListView&gt;(R.id.list).adapter = adapter
+    }
+}</code></pre></div></details>
+
+  <details class="q"><summary>6 — Телефонные звонки</summary><div class="in">
+  <p class="big">В AndroidManifest.xml добавь разрешение:</p>
+  <pre><button class="copy">копировать</button><code>&lt;uses-permission android:name="android.permission.CALL_PHONE" /&gt;</code></pre>
+  <p class="big">MainActivity.kt (кнопка id: call):</p>
+  <pre><button class="copy">копировать</button><code>import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
+
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        findViewById&lt;Button&gt;(R.id.call).setOnClickListener {
+            val intent = Intent(Intent.ACTION_DIAL)  // ACTION_DIAL — открыть набор, без разрешения
+            intent.data = Uri.parse("tel:+77001234567")
+            startActivity(intent)
+        }
+    }
+}</code></pre>
+  <p class="mut">ACTION_DIAL открывает звонилку с номером (безопасно). ACTION_CALL звонит сразу, но нужно разрешение.</p></div></details>
+
+  <details class="q"><summary>7 — RatingBar (звёзды-рейтинг)</summary><div class="in">
+  <p class="big">activity_main.xml:</p>
+  <pre><button class="copy">копировать</button><code>&lt;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"&gt;
+    &lt;RatingBar
+        android:id="@+id/rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:stepSize="1" /&gt;
+&lt;/LinearLayout&gt;</code></pre>
+  <p class="big">MainActivity.kt:</p>
+  <pre><button class="copy">копировать</button><code>import android.os.Bundle
+import android.widget.RatingBar
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        val rb = findViewById&lt;RatingBar&gt;(R.id.rating)
+        rb.setOnRatingBarChangeListener { _, rating, _ ->
+            Toast.makeText(this, "Оценка: $rating", Toast.LENGTH_SHORT).show()
+        }
+    }
+}</code></pre></div></details>
+
+  <details class="q"><summary>8 — Google Maps (ключ из задания)</summary><div class="in">
+  <p class="big">Создай проект через шаблон «Google Maps Views Activity». В AndroidManifest.xml внутри &lt;application&gt;:</p>
+  <pre><button class="copy">копировать</button><code>&lt;meta-data
+    android:name="com.google.android.geo.API_KEY"
+    android:value="AIzaSyDlrysRab7buK9aufWAvtt_HbOFAGI0KnE" /&gt;</code></pre>
+  <p class="big">MapsActivity.kt — поставить маркер на Алматы:</p>
+  <pre><button class="copy">копировать</button><code>override fun onMapReady(map: GoogleMap) {
+    val almaty = LatLng(43.2389, 76.8897)
+    map.addMarker(MarkerOptions().position(almaty).title("Алматы"))
+    map.moveCamera(CameraUpdateFactory.newLatLngZoom(almaty, 11f))
+}</code></pre>
+  <p class="mut">Шаблон Maps Activity сам создаёт основу — тебе остаётся вставить ключ и координаты.</p></div></details>
+
+  <details class="q"><summary>9 — Аналоговые часы (AnalogClock)</summary><div class="in">
+  <p class="big">activity_main.xml:</p>
+  <pre><button class="copy">копировать</button><code>&lt;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"&gt;
+    &lt;AnalogClock
+        android:layout_width="200dp"
+        android:layout_height="200dp" /&gt;
+&lt;/LinearLayout&gt;</code></pre>
+  <p class="mut">AnalogClock работает сам, код в MainActivity менять не нужно — только setContentView. (Элемент устаревший, но на экзамене подойдёт.)</p></div></details>
+
+  <details class="q"><summary>10 — Image Effects (прозрачность/оттенок)</summary><div class="in">
+  <p class="big">ImageView (id: img) + SeekBar (id: seek). MainActivity.kt — ползунок меняет прозрачность:</p>
+  <pre><button class="copy">копировать</button><code>import android.os.Bundle
+import android.widget.ImageView
+import android.widget.SeekBar
+import androidx.appcompat.app.AppCompatActivity
+
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        val img = findViewById&lt;ImageView&gt;(R.id.img)
+        val seek = findViewById&lt;SeekBar&gt;(R.id.seek)
+        seek.max = 255
+        seek.progress = 255
+        seek.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(s: SeekBar?, p: Int, b: Boolean) {
+                img.imageAlpha = p   // прозрачность 0..255
+            }
+            override fun onStartTrackingTouch(s: SeekBar?) {}
+            override fun onStopTrackingTouch(s: SeekBar?) {}
+        })
+    }
+}</code></pre></div></details>
+
+</section>
+
+<section id="py_theory" class="subj-py">
+  <h2>Теория · 60 вопросов</h2>
+  <p class="mut">Кратко и простым языком. Жми вопрос — раскроется ответ.</p>
+
+  <h3>🐍 Python (1–40)</h3>
+
+  <details class="q"><summary>1. Типы данных, операторы, переменные, константы</summary><div class="in">Типы: int (целые), float (дробные), str (строки), bool (True/False), list, tuple, dict, set. Переменная — имя для значения (x = 5). Константа — переменная, которую договорились не менять (пишут БОЛЬШИМИ: PI = 3.14). Операторы: арифметические (+ - * / // % **), сравнения (== != &lt; &gt;), логические (and or not).</div></details>
+
+  <details class="q"><summary>2. Операторы ветвления, выбора, цикла</summary><div class="in">Ветвление: <code>if / elif / else</code>. Выбор (с Python 3.10): <code>match / case</code>. Циклы: <code>for</code> (по элементам/range) и <code>while</code> (пока условие истинно). Управление: break (выход), continue (следующая итерация).</div></details>
+
+  <details class="q"><summary>3. Массивы одномерные и многомерные</summary><div class="in">В Python роль массива играет список (list). Одномерный: <code>a = [1,2,3]</code>. Многомерный — список списков: <code>m = [[1,2],[3,4]]</code>, доступ <code>m[0][1]</code> = 2. Настоящие массивы — через модуль array или numpy.</div></details>
+
+  <details class="q"><summary>4. Строки. Методы для работы со строками</summary><div class="in">Строка — последовательность символов. Методы: <code>upper()</code>, <code>lower()</code>, <code>strip()</code> (убрать пробелы), <code>split()</code> (разбить), <code>replace()</code>, <code>find()</code>, <code>count()</code>, <code>len(s)</code>. Срезы: <code>s[1:4]</code>, <code>s[::-1]</code> (разворот).</div></details>
+
+  <details class="q"><summary>5. Функции (методы)</summary><div class="in">Функция — блок кода, который можно вызывать по имени. <code>def name(args): return ...</code>. Параметры — входные данные, return — результат. Метод — функция, привязанная к объекту/классу.</div></details>
+
+  <details class="q"><summary>6. Файловый ввод-вывод. Работа с файлами</summary><div class="in">Открыть: <code>open("f.txt", "r")</code> (r-чтение, w-запись, a-добавить). Лучше через <code>with open(...) as f:</code> — сам закроет. Чтение: <code>f.read()</code>, <code>f.readlines()</code>. Запись: <code>f.write("текст")</code>.</div></details>
+
+  <details class="q"><summary>7. Класс как абстрактный тип. Создание и использование</summary><div class="in">Класс — чертёж для объектов, объединяет данные (поля) и поведение (методы). <code>class Dog: def __init__(self, name): self.name = name</code>. Создание объекта: <code>d = Dog("Рекс")</code>. Это абстракция — описываешь «что такое собака» в общем.</div></details>
+
+  <details class="q"><summary>8. Использование объектов и классов</summary><div class="in">Объект — конкретный экземпляр класса. Создаём: <code>obj = MyClass()</code>. Обращение к полям/методам через точку: <code>obj.field</code>, <code>obj.method()</code>. Один класс → много объектов с разными данными.</div></details>
+
+  <details class="q"><summary>9. Списки, кортежи, словари</summary><div class="in"><b>Список</b> [1,2,3] — изменяемый, упорядоченный. <b>Кортеж</b> (1,2,3) — НЕизменяемый. <b>Словарь</b> {"ключ":"значение"} — пары ключ-значение, доступ по ключу.</div></details>
+
+  <details class="q"><summary>10. Компоненты для работы с текстом</summary><div class="in">Строковые методы (split, join, replace, format), f-строки (<code>f"{x}"</code>), модуль <code>re</code> (регулярные выражения), модуль <code>string</code>. В Tkinter — виджеты Entry, Text, Label.</div></details>
+
+  <details class="q"><summary>11. Модули. Определение и подключение</summary><div class="in">Модуль — файл .py с функциями/классами, который можно переиспользовать. Подключение: <code>import math</code>, <code>from math import sqrt</code>, <code>import numpy as np</code>. Свой модуль: создаёшь myfile.py и пишешь <code>import myfile</code>.</div></details>
+
+  <details class="q"><summary>12. Как принять ввод с клавиатуры?</summary><div class="in">Функцией <code>input()</code>: <code>x = input("Введите: ")</code> — вернёт строку. Для числа оборачивай: <code>int(input())</code> или <code>float(input())</code>.</div></details>
+
+  <details class="q"><summary>13. Как проверить, что все символы строки алфавитно-цифровые?</summary><div class="in">Методом <code>s.isalnum()</code> — вернёт True, если все символы буквы или цифры. Похожие: isalpha() (только буквы), isdigit() (только цифры).</div></details>
+
+  <details class="q"><summary>14. Разница между списком и кортежем</summary><div class="in">Список (list, []) — изменяемый: можно добавлять/удалять элементы. Кортеж (tuple, ()) — неизменяемый: после создания не поменять. Кортеж быстрее и его можно использовать как ключ словаря.</div></details>
+
+  <details class="q"><summary>15. Функция range</summary><div class="in">Генерирует последовательность чисел. <code>range(5)</code> → 0,1,2,3,4. <code>range(2,8)</code> → 2..7. <code>range(0,10,2)</code> → 0,2,4,6,8 (шаг 2). Часто в циклах for.</div></details>
+
+  <details class="q"><summary>16. Локальные и глобальные переменные</summary><div class="in">Локальная — создана внутри функции, видна только там. Глобальная — вне функций, видна везде. Чтобы менять глобальную внутри функции — ключевое слово <code>global x</code>.</div></details>
+
+  <details class="q"><summary>17. Разница между func и func()</summary><div class="in"><code>func</code> — ссылка на саму функцию (объект), можно передать куда-то. <code>func()</code> — вызов функции, выполняет её и возвращает результат.</div></details>
+
+  <details class="q"><summary>18. Как работает функция map</summary><div class="in"><code>map(функция, список)</code> применяет функцию к каждому элементу. Пример: <code>map(str, [1,2,3])</code> → "1","2","3". Результат оборачивают в list(): <code>list(map(...))</code>.</div></details>
+
+  <details class="q"><summary>19. По ссылке или по значению?</summary><div class="in">В Python — «по ссылке на объект» (точнее, передаётся ссылка). Изменяемые объекты (списки) можно менять внутри функции, и снаружи это видно. Неизменяемые (числа, строки) — нет.</div></details>
+
+  <details class="q"><summary>20. Как развернуть список?</summary><div class="in">Срезом: <code>arr[::-1]</code>. Или методом <code>arr.reverse()</code> (меняет сам список). Или <code>list(reversed(arr))</code>.</div></details>
+
+  <details class="q"><summary>21. Что означает self в классе?</summary><div class="in">self — ссылка на сам объект. Через него методы обращаются к полям этого объекта: <code>self.name</code>. Первый параметр каждого метода класса.</div></details>
+
+  <details class="q"><summary>22. Как объединить списки?</summary><div class="in">Оператором +: <code>a + b</code>. Методом <code>a.extend(b)</code>. Или распаковкой: <code>[*a, *b]</code>.</div></details>
+
+  <details class="q"><summary>23. Разница между списками и массивами</summary><div class="in">Список (list) может хранить разные типы (число, строку вместе), встроен в Python. Массив (array/numpy) хранит элементы одного типа, занимает меньше памяти, быстрее для вычислений. Numpy-массивы для математики.</div></details>
+
+  <details class="q"><summary>24. Изменяемые и неизменяемые объекты</summary><div class="in"><b>Изменяемые:</b> list, dict, set. <b>Неизменяемые:</b> int, float, str, tuple, bool. Неизменяемые нельзя поменять «на месте» — создаётся новый объект.</div></details>
+
+  <details class="q"><summary>25. Как округлить до трёх знаков?</summary><div class="in">Функцией <code>round(x, 3)</code>. Например <code>round(3.14159, 3)</code> → 3.142. Или форматом <code>f"{x:.3f}"</code>.</div></details>
+
+  <details class="q"><summary>26. Где быстрее поиск: в словарях или списках?</summary><div class="in">В словарях. Словарь использует хеш — поиск по ключу почти мгновенный (O(1)). В списке поиск перебором (O(n)) — медленнее на больших данных.</div></details>
+
+  <details class="q"><summary>27. Разница между модулем и пакетом</summary><div class="in">Модуль — один файл .py. Пакет — папка с модулями (содержит файл __init__.py). Пакет группирует связанные модули.</div></details>
+
+  <details class="q"><summary>28. Как увеличить/уменьшить целое число?</summary><div class="in"><code>x += 1</code> (увеличить на 1), <code>x -= 1</code> (уменьшить). В Python нет x++ как в Си.</div></details>
+
+  <details class="q"><summary>29. Как проверить, есть ли значение в списке?</summary><div class="in">Оператором <code>in</code>: <code>if 5 in arr:</code> → True/False.</div></details>
+
+  <details class="q"><summary>30. Разница между append и extend</summary><div class="in"><code>append(x)</code> добавляет x как ОДИН элемент (даже если это список — вложит целиком). <code>extend(list)</code> добавляет каждый элемент списка по отдельности.</div></details>
+
+  <details class="q"><summary>31. Разница между pass, continue и break</summary><div class="in"><b>pass</b> — ничего не делает (заглушка). <b>continue</b> — пропускает остаток итерации, идёт к следующей. <b>break</b> — полностью выходит из цикла.</div></details>
+
+  <details class="q"><summary>32. Какие типы данных в Python? (5)</summary><div class="in">int (целые), float (дробные), str (строки), bool (логические), list (списки). Ещё: tuple, dict, set, complex.</div></details>
+
+  <details class="q"><summary>33. Обработка исключений</summary><div class="in">Блок <code>try / except</code>: <code>try: рискованный код except ОшибкаType: что делать</code>. Ещё <code>else</code> (если ошибки не было) и <code>finally</code> (выполнится всегда).</div></details>
+
+  <details class="q"><summary>34. Tkinter: окно, кнопки, позиционирование</summary><div class="in">Окно: <code>win = tk.Tk()</code>, размер <code>win.geometry("300x200")</code>, запуск <code>win.mainloop()</code>. Кнопка: <code>tk.Button(win, text="OK", command=func)</code>. Позиционирование: pack(), grid(row,column), place(x,y).</div></details>
+
+  <details class="q"><summary>35. Tkinter: Label, Entry и другие элементы</summary><div class="in">Label — текстовая метка. Entry — поле ввода (одна строка), читаем <code>ent.get()</code>. Text — многострочное поле. Checkbutton, Radiobutton, Listbox, Canvas (графика).</div></details>
+
+  <details class="q"><summary>36. Работа с базой SQLite</summary><div class="in"><code>import sqlite3</code>. Подключение: <code>con = sqlite3.connect("db.db")</code>, курсор <code>cur = con.cursor()</code>. Запросы: <code>cur.execute("SELECT ...")</code>, сохранить <code>con.commit()</code>, закрыть <code>con.close()</code>.</div></details>
+
+  <details class="q"><summary>37. Python полностью поддерживает ООП?</summary><div class="in">Да. Есть классы, объекты, наследование, инкапсуляция, полиморфизм. Но инкапсуляция «по соглашению» (приватность через _ и __, не строгая, как в Java).</div></details>
+
+  <details class="q"><summary>38. Что может быть ключом в словаре?</summary><div class="in">Только неизменяемые (хешируемые) объекты: строки, числа, кортежи. Список или другой словарь ключом быть не могут.</div></details>
+
+  <details class="q"><summary>39. Для чего функция __init__?</summary><div class="in">Это конструктор — вызывается автоматически при создании объекта. Задаёт начальные значения полей: <code>def __init__(self, name): self.name = name</code>.</div></details>
+
+  <details class="q"><summary>40. Синхронный и асинхронный код</summary><div class="in">Синхронный — команды выполняются по очереди, каждая ждёт предыдущую. Асинхронный — может начать задачу и не ждать (async/await), пока идёт ожидание (например запрос в сеть) — делает другое. Асинхронный эффективнее при ожиданиях.</div></details>
+
+  <h3>☕ Java (41–46)</h3>
+
+  <details class="q"><summary>41. Основные отличия Kotlin и Java</summary><div class="in">Kotlin современнее и короче: null-безопасность (?), нет точек с запятой, val/var вместо типов, data-классы. Java старше, многословнее, но огромная база кода. Оба работают на JVM, Kotlin — официальный язык Android.</div></details>
+
+  <details class="q"><summary>42. Назначение Java. Средства разработки</summary><div class="in">Java — кроссплатформенный язык («написал раз — работает везде» через JVM). Применение: серверы, Android, десктоп. Средства: JDK (комплект разработчика), IDE (IntelliJ IDEA, Eclipse), компилятор javac.</div></details>
+
+  <details class="q"><summary>43. Типы данных и операции (Java)</summary><div class="in">Примитивы: int, double, float, char, boolean, long, short, byte. Ссылочные: String, массивы, объекты. Операции: арифметические (+ - * / %), сравнения (== != &lt; &gt;), логические (&amp;&amp; || !).</div></details>
+
+  <details class="q"><summary>44. ООП в Java</summary><div class="in">4 принципа: <b>Инкапсуляция</b> (скрытие данных, private + геттеры/сеттеры), <b>Наследование</b> (extends), <b>Полиморфизм</b> (один интерфейс — разные реализации), <b>Абстракция</b> (abstract, interface).</div></details>
+
+  <details class="q"><summary>45. Работа со строками (Java)</summary><div class="in">Класс String (неизменяемый). Методы: length(), charAt(), substring(), indexOf(), equals() (сравнение!), toUpperCase(), replace(). Для частых изменений — StringBuilder.</div></details>
+
+  <details class="q"><summary>46. Геттеры и сеттеры в Java</summary><div class="in">Поля делают private, доступ через методы. <b>Геттер</b> getName() — возвращает значение. <b>Сеттер</b> setName(value) — устанавливает. Это инкапсуляция: контроль доступа к данным.</div></details>
+
+  <h3>🤖 Android Studio (47–60)</h3>
+
+  <details class="q"><summary>47. Что такое Activity? Жизненный цикл</summary><div class="in">Activity — один экран приложения. Жизненный цикл (методы): <code>onCreate</code> (создан) → <code>onStart</code> (виден) → <code>onResume</code> (активен) → onPause → onStop → onDestroy. Система вызывает их сама при открытии/сворачивании.</div></details>
+
+  <details class="q"><summary>48. Что такое AndroidManifest?</summary><div class="in">Главный файл-описание приложения (AndroidManifest.xml). Содержит: имя пакета, список Activity, разрешения (permissions), иконку, какая Activity стартовая. Без него приложение не соберётся.</div></details>
+
+  <details class="q"><summary>49. Что такое Intent?</summary><div class="in">Intent («намерение») — объект для запуска действий: открыть другую Activity, позвонить, открыть камеру, передать данные. Явный (указываешь класс) и неявный (указываешь действие, систему сама выбирает приложение).</div></details>
+
+  <details class="q"><summary>50. Диалоговые окна Android</summary><div class="in">AlertDialog (сообщение с кнопками OK/Cancel), DatePickerDialog (выбор даты), TimePickerDialog (время), ProgressDialog (загрузка), Toast (всплывающее сообщение, технически не диалог).</div></details>
+
+  <details class="q"><summary>51. Виды Layout</summary><div class="in"><b>LinearLayout</b> — в ряд/столбец. <b>RelativeLayout</b> — относительно друг друга. <b>ConstraintLayout</b> — гибкий, по «привязкам» (сейчас основной). <b>FrameLayout</b> — слоями. <b>TableLayout</b> — таблицей.</div></details>
+
+  <details class="q"><summary>52. Исполняемые файлы на Android</summary><div class="in"><b>APK</b> (Android Package) — установочный файл приложения. <b>AAB</b> (Android App Bundle) — формат для Google Play, из него генерируются оптимизированные APK. Внутри: код (DEX), ресурсы, манифест.</div></details>
+
+  <details class="q"><summary>53. Что такое View? Примеры ViewGroup</summary><div class="in">View — базовый элемент интерфейса (кнопка, текст, картинка). ViewGroup — контейнер для View (сам тоже View). Примеры ViewGroup: LinearLayout, RelativeLayout, ConstraintLayout, FrameLayout, RecyclerView.</div></details>
+
+  <details class="q"><summary>54. Структура проекта в Android Studio</summary><div class="in"><b>manifests/</b> — AndroidManifest.xml. <b>java/</b> (или kotlin) — код (Activity). <b>res/</b> — ресурсы: layout (разметка), drawable (картинки), values (строки, цвета). <b>Gradle</b> — файлы сборки (зависимости).</div></details>
+
+  <details class="q"><summary>55. Что такое SDK Manager и AVD Manager?</summary><div class="in"><b>SDK Manager</b> — управляет версиями Android SDK (инструменты, платформы). <b>AVD Manager</b> — создаёт и управляет виртуальными устройствами (эмуляторами), на которых тестируешь приложение.</div></details>
+
+  <details class="q"><summary>56. Создание простого меню</summary><div class="in">Создаёшь файл res/menu/menu.xml с пунктами (item). В Activity переопределяешь <code>onCreateOptionsMenu</code> (надуть меню) и <code>onOptionsItemSelected</code> (обработать нажатие пунктов).</div></details>
+
+  <details class="q"><summary>57. Папка res/values. Ресурсы приложения</summary><div class="in">Хранит ресурсы в XML: <b>strings.xml</b> (тексты), <b>colors.xml</b> (цвета), <b>styles/themes.xml</b> (стили), dimens.xml (размеры). Доступ из кода: <code>R.string.app_name</code>. Удобно для перевода и единообразия.</div></details>
+
+  <details class="q"><summary>58. Среды разработки для Android</summary><div class="in">Главная — <b>Android Studio</b> (официальная, на IntelliJ IDEA). Другие: Eclipse + ADT (устарела), Visual Studio (Xamarin), Flutter/React Native (кроссплатформа), IntelliJ IDEA.</div></details>
+
+  <details class="q"><summary>59. Адаптеры и списки в Android</summary><div class="in">Адаптер связывает данные с виджетом-списком. <b>ArrayAdapter</b> — простой список из массива. <b>BaseAdapter</b> — свой. Списки: <b>ListView</b> (старый), <b>RecyclerView</b> (современный, эффективный для длинных списков).</div></details>
+
+  <details class="q"><summary>60. Работа с графикой и изображениями</summary><div class="in"><b>ImageView</b> — показ картинок (из res/drawable). <b>Canvas + Paint</b> — рисование (линии, фигуры). Библиотеки загрузки картинок из сети: Glide, Picasso. Форматы: PNG, JPG, WebP, векторные XML (vector drawable).</div></details>
+
+</section>
+
+</div><!-- /wrap -->
+<script>
+// --- переключение предмета ---
+function showSubject(s){
+  document.querySelectorAll('.subj').forEach(x=>x.classList.toggle('active', x.dataset.s===s));
+  document.querySelectorAll('.tabgroup').forEach(x=>x.classList.toggle('active', x.dataset.g===s));
+  // скрыть все секции
+  document.querySelectorAll('section').forEach(x=>x.classList.remove('active'));
+  // активировать первую вкладку и секцию этого предмета
+  const grp=document.querySelector('.tabgroup[data-g="'+s+'"]');
+  grp.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  const firstTab=grp.querySelector('.tab');
+  firstTab.classList.add('active');
+  document.getElementById(firstTab.dataset.t).classList.add('active');
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('.subj').forEach(b=>{
+  b.onclick=()=>showSubject(b.dataset.s);
+});
+
+// --- переключение вкладок внутри предмета ---
+document.querySelectorAll('.tab').forEach(t=>{
+  t.onclick=()=>{
+    // снять active только с вкладок текущей группы
+    t.closest('.tabgroup').querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('section').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.t).classList.add('active');
+    window.scrollTo(0,0);
+  };
+});
+
+// --- копирование кода ---
+document.querySelectorAll('.copy').forEach(b=>{
+  b.onclick=(e)=>{
+    e.stopPropagation();
+    const code=b.parentElement.querySelector('code').innerText;
+    navigator.clipboard.writeText(code).then(()=>{
+      const o=b.innerText;b.innerText='✓ скопировано';setTimeout(()=>b.innerText=o,1200);
+    });
+  };
+});
+
+// стартовое состояние
+showSubject('mc');
+</script>
+</body>
+</html>
